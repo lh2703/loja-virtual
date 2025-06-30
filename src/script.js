@@ -19,6 +19,20 @@ class Carrinho {
         }
         this.exibir();
     }
+
+    remover(produto) {
+        const item = this.itens.find(p => p.produto.nome === produto.nome);
+        if (item) {
+            if (item.quantidade > 1) {
+                item.quantidade--;
+            } else {
+                const index = this.itens.findIndex(p => p.produto.nome === produto.nome);
+                this.itens.splice(index, 1);
+            }
+            this.exibir();
+        }
+    }
+
     calcularTotal() {
         return this.itens.reduce((total, item) => {
             return total + (item.produto.preco * item.quantidade);
@@ -36,6 +50,7 @@ class Carrinho {
                 carrinhoDiv.innerHTML += `
                     <p>
                         ${item.produto.nome} - R$ ${item.produto.preco.toFixed(2)} x ${item.quantidade}
+                        <button onclick="carrinho.remover(produtosDisponiveis.find(p => p.nome === '${item.produto.nome}'))">Remover</button>
                     </p>
                 `;
             });
