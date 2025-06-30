@@ -1,14 +1,15 @@
 class Produto {
-    constructor(nome, preco, cores, tamanhos) {
+    constructor(nome, preco, cores, tamanhos, imagem) {
         this.nome = nome;
         this.preco = preco;
         this.cores = cores;
         this.tamanhos = tamanhos;
+        this.imagem = imagem;
     }
 }
 
-class ItemCarrinho{
-    constructor(produto, cor, tamanho){
+class ItemCarrinho {
+    constructor(produto, cor, tamanho) {
         this.produto = produto;
         this.cor = cor;
         this.tamanho = tamanho;
@@ -16,31 +17,32 @@ class ItemCarrinho{
     }
 }
 
-
 class Carrinho {
     constructor() {
         this.itens = [];
     }
 
     adicionar(produto, cor, tamanho) {
-        const itemExistente = this.itens.find(p => 
+        const itemExistente = this.itens.find(p =>
             p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho);
-        
+
         if (itemExistente) {
             itemExistente.quantidade++;
         } else {
-            this.itens.push(new ItemCarrinho (produto, cor, tamanho));
+            this.itens.push(new ItemCarrinho(produto, cor, tamanho));
         }
         this.exibir();
     }
 
-    remover(produto) {
-        const item = this.itens.find(p => p.produto.nome === produto.nome);
+    remover(produto, cor, tamanho) {
+        const item = this.itens.find(p =>
+            p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho);
         if (item) {
             if (item.quantidade > 1) {
                 item.quantidade--;
             } else {
-                const index = this.itens.findIndex(p => p.produto.nome === produto.nome);
+                const index = this.itens.findIndex(p =>
+                    p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho);
                 this.itens.splice(index, 1);
             }
             this.exibir();
@@ -54,34 +56,82 @@ class Carrinho {
     }
 
     exibir() {
-    const carrinhoDiv = document.getElementById('carrinho');
-    carrinhoDiv.innerHTML = '';
+        const carrinhoDiv = document.getElementById('carrinho');
+        carrinhoDiv.innerHTML = '';
 
-    if (this.itens.length === 0) {
-        carrinhoDiv.innerHTML = '<p>Carrinho vazio.</p>';
-    } else {
-        this.itens.forEach(item => {
-            carrinhoDiv.innerHTML += `
-                <p>
-                    ${item.produto.nome} (${item.produto.cor}, Tam: ${item.produto.tamanho}) 
-                    - R$ ${item.produto.preco.toFixed(2)} x ${item.quantidade}
-                    <button onclick="carrinho.remover(produtosDisponiveis.find(p => p.nome === '${item.produto.nome}'))">Remover</button>
-                </p>
-            `;
-        });
+        if (this.itens.length === 0) {
+            carrinhoDiv.innerHTML = '<p>Carrinho vazio.</p>';
+        } else {
+            this.itens.forEach(item => {
+                const p = document.createElement('p');
+                p.textContent = `${item.produto.nome} (${item.cor}, Tam: ${item.tamanho}) - R$ ${item.produto.preco.toFixed(2)} x ${item.quantidade}`;
+
+                const btn = document.createElement('button');
+                btn.textContent = 'Remover';
+                btn.addEventListener('click', () => {
+                    this.remover(item.produto, item.cor, item.tamanho);
+                });
+
+                p.appendChild(btn);
+                carrinhoDiv.appendChild(p);
+            });
+        }
+
+        document.getElementById('total').innerText = this.calcularTotal().toFixed(2);
     }
-
-    document.getElementById('total').innerText = this.calcularTotal().toFixed(2);
-}
-
 }
 
 const produtosDisponiveis = [
-    new Produto("Camiseta", 49.90, ["Azul", "Preto", "Rosa", "Branco"], ["P", "M", "G", "GG"]),
-    new Produto("Calça Jeans", 89.90, ["Azul", "Preto", "Cinza"], ["40", "42", "44"]),
-    new Produto("Jaqueta", 199.90, ["Preto", "Marrom", "Vermelho"], ["P", "M", "G", "GG"]),
-    new Produto("Vestido", 149.90, ["Verde", "Branco", "Azul", "Roxo"], ["P", "M", "G", "GG"]),
-    new Produto("Boné", 29.90, ["Preto", "Branco", "Cinza", "Bege"], ["Único"])
+    new Produto(
+        "Camiseta",
+        49.90,
+        ["Preto", "Vermelho", "Branco"],
+        ["P", "M", "G", "GG"],
+        {
+            "Preto": "imagens/camisetas/camisaPreta.png",
+            "Vermelho": "imagens/camisetas/camisaVermelha.png",
+            "Branco": "imagens/camisetas/camisaBranca.png"
+        }
+    ),
+    new Produto(
+        "Calça Alfaiataria",
+        89.90,
+        ["Preto", "Bege", "Cinza"],
+        ["40", "42", "44"],
+        {
+            "Preto": "imagens/calca/calcaPreta.png",
+            "Bege": "imagens/calca/calcaBege.png",
+            "Cinza": "imagens/calca/calcaCinza.png"
+        }
+        
+    ),
+    new Produto(
+        "Jaqueta Jeans",
+        199.90,
+        ["Jeans Claro"],
+        ["P", "M", "G", "GG"],
+        {
+            "Jeans Claro": "imagens/jaquetas/jaquetaClara.png",
+        }
+    ),
+    new Produto(
+        "Vestido",
+        149.90,
+        ["Preto", "Marrom", "Verde"],
+        ["P", "M", "G", "GG"],
+        {
+            "Verde": "imagens/vestidos/vestidoVerde.png",
+            "Marrom": "imagens/vestidos/vestidoMarrom.png",
+            "Preto": "imagens/vestidos/vestidoPreto.png"
+        }
+    ),
+    new Produto(
+        "Boné",
+        29.90,
+        ["Preto", "Branco", "Cinza", "Bege"],
+        ["Único"],
+        "imagens/bone.png"
+    )
 ];
 
 const carrinho = new Carrinho();
@@ -95,17 +145,25 @@ function listarProdutos() {
         div.className = 'produto';
 
         let opcoesCores = '';
-        produto.cores.forEach(cor =>{
+        produto.cores.forEach(cor => {
             opcoesCores += `<option value="${cor}">${cor}</option>`;
         });
 
         let opcoesTamanhos = '';
-        produto.tamanhos.forEach(tam =>{
+        produto.tamanhos.forEach(tam => {
             opcoesTamanhos += `<option value="${tam}">${tam}</option>`;
         });
 
+        let imagemInicial = '';
+        if (typeof produto.imagem === 'object') {
+            imagemInicial = produto.imagem[produto.cores[0]];
+        } else {
+            imagemInicial = produto.imagem;
+        }
+
         div.innerHTML = `
             <h3>${produto.nome}</h3>
+            <img src="${imagemInicial}" alt="${produto.nome}" style="width:150px;height:auto;" class="imagem-produto" />
             <p>R$ ${produto.preco.toFixed(2)}</p>
             <label>Cor:
                 <select class="cor">${opcoesCores}</select>
@@ -116,13 +174,22 @@ function listarProdutos() {
             <button>Adicionar ao Carrinho</button>
         `;
 
+        const selectCor = div.querySelector('.cor');
+        const img = div.querySelector('.imagem-produto');
+
+        if (typeof produto.imagem === 'object') {
+            selectCor.addEventListener('change', () => {
+                const corSelecionada = selectCor.value;
+                img.src = produto.imagem[corSelecionada];
+            });
+        }
+
         const botao = div.querySelector('button');
         botao.addEventListener('click', () => {
-            const corSelecionada = div.querySelector('.cor').value;
+            const corSelecionada = selectCor.value;
             const tamanhoSelecionado = div.querySelector('.tamanho').value;
             carrinho.adicionar(produto, corSelecionada, tamanhoSelecionado);
         });
-
 
         container.appendChild(div);
     });
