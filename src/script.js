@@ -1,4 +1,4 @@
-// Classe base com propriedades comuns a todos os tipos de produtos
+// classe base dos produtos na loja
 class ProdutoBase {
     constructor(nome, categoria, preco) {
         this.nome = nome;
@@ -7,7 +7,7 @@ class ProdutoBase {
     }
 }
 
-// Subclasse específica para produtos com variação de cor, tamanho e imagem
+// subclasse para produtos com diferentes cores e tamanhos (herda de ProdutoBase)
 class Produto extends ProdutoBase {
     constructor(nome, categoria, preco, cores, tamanhos, imagem) {
         super(nome, categoria, preco);
@@ -17,7 +17,7 @@ class Produto extends ProdutoBase {
     }
 }
 
-// Representa um item dentro do carrinho
+// itens dentro do carrinho
 class ItemCarrinho {
     constructor(produto, cor, tamanho) {
         this.produto = produto;
@@ -27,7 +27,7 @@ class ItemCarrinho {
     }
 }
 
-// Carrinho de compras com funcionalidades básicas
+// carrinho de compras com suas funcionalidades
 class Carrinho {
     constructor() {
         this.itens = [];
@@ -108,83 +108,19 @@ class Carrinho {
 
 }
 
-// Lista de produtos instanciados usando a classe Produto (herda de ProdutoBase)
-const produtosDisponiveis = [
-    new Produto("Camiseta Mas", "Camisetas", 49.90,
-        ["Preto", "Vermelho", "Branco"],
-        ["P", "M", "G", "GG"],
-        {
-            "Preto": "imagens/camisetas/camiseta masculina/camisaPreta.png",
-            "Vermelho": "imagens/camisetas/camiseta masculina/camisaVermelha.png",
-            "Branco": "imagens/camisetas/camiseta masculina/camisaBranca.png"
-        }
-    ),
-    new Produto("Camiseta Fem", "Camisetas", 49.90,
-        ["Bege", "Azul", "Branco"],
-        ["P", "M", "G", "GG"],
-        {
-            "Bege": "imagens/camisetas/camiseta feminina/camisaBege.png",
-            "Azul": "imagens/camisetas/camiseta feminina/camisaAzul.png",
-            "Branco": "imagens/camisetas/camiseta feminina/camisaBranca.png"
-        }
-    ),
-    new Produto("Regata Fem", "Camisetas", 49.90,
-        ["Preto", "Marrom", "Branco"],
-        ["P", "M", "G", "GG"],
-        {
-            "Preto": "imagens/camisetas/regata feminina/regataPreta.png",
-            "Marrom": "imagens/camisetas/regata feminina/regataMarrom.png",
-            "Branco": "imagens/camisetas/regata feminina/regataBranca.png"
-        }
-    ),
-    new Produto("Calça Alfaiataria", "Calças", 89.90,
-        ["Preto", "Bege", "Cinza"],
-        ["40", "42", "44"],
-        {
-            "Preto": "imagens/calca/calcaPreta.png",
-            "Bege": "imagens/calca/calcaBege.png",
-            "Cinza": "imagens/calca/calcaCinza.png"
-        }
-    ),
-    new Produto("Jaqueta Jeans", "Jaquetas", 199.90,
-        ["Jeans Claro"],
-        ["P", "M", "G", "GG"],
-        {
-            "Jeans Claro": "imagens/jaquetas/jaquetaClara.png"
-        }
-    ),
-    new Produto("Vestido Curto", "Vestidos", 149.90,
-        ["Preto", "Marrom", "Verde"],
-        ["P", "M", "G", "GG"],
-        {
-            "Verde": "imagens/vestidos/vestidoVerde.png",
-            "Marrom": "imagens/vestidos/vestidoMarrom.png",
-            "Preto": "imagens/vestidos/vestidoPreto.png"
-        }
-    ),
-    new Produto("Vestido Listrado", "Vestidos", 99.90,
-        ["Branco", "Preto e Branco"],
-        ["P", "M", "G", "GG"],
-        {
-            "Branco": "imagens/vestidos/listadoBranco.png",
-            "Preto e Branco": "imagens/vestidos/listradoBranco.png"
-        }
-    ),
-    new Produto("Vestido Longo", "Vestidos", 99.90,
-        ["Bege", "Marrom", "Cinza"],
-        ["P", "M", "G", "GG"],
-        {
-            "Bege": "imagens/vestidos/longoBege.png",
-            "Marrom": "imagens/vestidos/longoPreto.png",
-            "Cinza": "imagens/vestidos/longoCinza.png"
-        }
-    ),
-    new Produto("Boné", "Bonés", 29.90,
-        ["Preto", "Branco", "Cinza", "Bege"],
-        ["Único"],
-        "imagens/bone.png"
-    )
-];
+// lista de produtos instanciados usando a classe Produto, herdada de ProdutoBase
+let produtosDisponiveis = [];
+
+fetch('produtos.json')
+  .then(res => res.json())
+  .then(dados => {
+    produtosDisponiveis = dados.map(p =>
+      new Produto(p.nome, p.categoria, p.preco, p.cores, p.tamanhos, p.imagem)
+    );
+    listarProdutos();
+  })
+  .catch(erro => console.error("Erro ao carregar produtos:", erro));
+
 
 const carrinho = new Carrinho();
 
