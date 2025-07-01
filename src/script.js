@@ -1,112 +1,171 @@
 // classe base dos produtos na loja
 class ProdutoBase {
     constructor(nome, categoria, preco) {
-        this.nome = nome;
-        this.categoria = categoria;
-        this.preco = preco;
+        this._nome = nome;
+        this._categoria = categoria;
+        this._preco = preco;
+    }
+
+    get nome() {
+        return this._nome;
+    }
+    get categoria() {
+        return this._categoria;
+    }
+    get preco() {
+        return this._preco;
     }
 }
 
-// subclasse para produtos com diferentes cores e tamanhos (herda de ProdutoBase)
 class Produto extends ProdutoBase {
     constructor(nome, categoria, preco, cores, tamanhos, imagem) {
         super(nome, categoria, preco);
-        this.cores = cores;
-        this.tamanhos = tamanhos;
-        this.imagem = imagem;
+        this._cores = cores;
+        this._tamanhos = tamanhos;
+        this._imagem = imagem;
+    }
+
+    get cores() {
+        return this._cores;
+    }
+    get tamanhos() {
+        return this._tamanhos;
+    }
+    get imagem() {
+        return this._imagem;
     }
 }
+
 
 // itens dentro do carrinho
 class ItemCarrinho {
     constructor(produto, cor, tamanho) {
-        this.produto = produto;
-        this.cor = cor;
-        this.tamanho = tamanho;
-        this.quantidade = 1;
+        this._produto = produto;
+        this._cor = cor;
+        this._tamanho = tamanho;
+        this._quantidade = 1;
+    }
+
+    get produto() {
+        return this._produto;
+    }
+
+    get cor() {
+        return this._cor;
+    }
+
+    get tamanho() {
+        return this._tamanho;
+    }
+
+    get quantidade() {
+        return this._quantidade;
+    }
+
+    incrementar() {
+        this._quantidade++;
+    }
+
+    decrementar() {
+        if (this._quantidade > 0) {
+            this._quantidade--;
+        }
     }
 }
 
 // carrinho de compras com suas funcionalidades
-class Carrinho {
+class Carrinho{
     constructor() {
-        this.itens = [];
+        this._itens = [];
+    }
+    get itens() {
+        return this._itens;
     }
 
-    adicionar(produto, cor, tamanho) {
-        const itemExistente = this.itens.find(p =>
-            p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho);
+    adicionar(produto, cor, tamanho){
+        const itemExiste = this._itens.find(p => 
+            p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho
+        );
 
-        if (itemExistente) {
-            itemExistente.quantidade++;
-        } else {
-            this.itens.push(new ItemCarrinho(produto, cor, tamanho));
+        if (itemExiste){
+            itemExiste.incrementar();
+        }else{
+            this._itens.push(new ItemCarrinho(produto, cor, tamanho));
         }
-        this.exibir();
     }
 
-    remover(produto, cor, tamanho) {
-        const item = this.itens.find(p =>
-            p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho);
+    remover(produto, cor, tamanho){
+        const item = this._itens.find(p =>
+            p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho
+        );
+
         if (item) {
-            if (item.quantidade > 1) {
-                item.quantidade--;
-            } else {
-                const index = this.itens.findIndex(p =>
-                    p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho);
-                this.itens.splice(index, 1);
+            item.decrementar();
+            if (item.quantidade === 0){
+                const index = this._itens.indexOf(item);
+                this._itens.splice(index, 1);
             }
-            this.exibir();
         }
     }
 
     calcularTotal() {
-        return this.itens.reduce((total, item) => {
+        return this._itens.reduce((total, item) => {
             return total + (item.produto.preco * item.quantidade);
         }, 0);
     }
+}
 
-   exibir() {
-    const carrinhoDiv = document.getElementById('itens-carrinho');
-    carrinhoDiv.innerHTML = '';
-
-    if (this.itens.length === 0) {
-        carrinhoDiv.innerHTML = '<p>Carrinho vazio.</p>';
-    } else {
-        this.itens.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'item-carrinho';
-
-            const img = document.createElement('img');
-            img.src = typeof item.produto.imagem === 'object'
-                ? item.produto.imagem[item.cor]
-                : item.produto.imagem;
-
-            const details = document.createElement('div');
-            details.className = 'item-carrinho-details';
-            details.innerHTML = `
-                <strong>${item.produto.nome}</strong><br>
-                Cor: ${item.cor}<br>
-                Tam: ${item.tamanho}<br>
-                Qtde: ${item.quantidade}
-            `;
-
-            const btn = document.createElement('button');
-            btn.textContent = '✖';
-            btn.onclick = () => this.remover(item.produto, item.cor, item.tamanho);
-
-            div.appendChild(img);
-            div.appendChild(details);
-            div.appendChild(btn);
-
-            carrinhoDiv.appendChild(div);
-        });
+class CarrinhoView {
+    constructor(carrinho, containerId, totalId) {
+        this.carrinho = carrinho;
+        this.container = document.getElementById(containerId);
+        this.total = document.getElementById(totalId);
     }
 
-    document.getElementById('total').innerText = this.calcularTotal().toFixed(2);
+    atualizar() {
+        this.container.innerHTML = '';
+
+        if (this.carrinho.itens.length === 0) {
+            this.container.innerHTML = '<p>Carrinho vazio.</p>';
+        } else {
+            this.carrinho.itens.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item-carrinho';
+
+                const img = document.createElement('img');
+                img.src = typeof item.produto.imagem === 'object'
+                    ? item.produto.imagem[item.cor]
+                    : item.produto.imagem;
+
+                const details = document.createElement('div');
+                details.className = 'item-carrinho-details';
+                details.innerHTML = `
+                    <strong>${item.produto.nome}</strong><br>
+                    Cor: ${item.cor}<br>
+                    Tam: ${item.tamanho}<br>
+                    Qtde: ${item.quantidade}
+                `;
+
+                const btn = document.createElement('button');
+                btn.textContent = '✖';
+                btn.onclick = () => {
+                    this.carrinho.remover(item.produto, item.cor, item.tamanho);
+                    this.atualizar();
+                };
+
+                div.appendChild(img);
+                div.appendChild(details);
+                div.appendChild(btn);
+
+                this.container.appendChild(div);
+            });
+        }
+
+        this.total.innerText = this.carrinho.calcularTotal().toFixed(2);
+    }
 }
 
-}
+
 
 // lista de produtos instanciados usando a classe Produto, herdada de ProdutoBase
 let produtosDisponiveis = [];
@@ -123,6 +182,8 @@ fetch('produtos.json')
 
 
 const carrinho = new Carrinho();
+const carrinhoView = new CarrinhoView(carrinho, 'itens-carrinho', 'total');
+
 
 function listarProdutos(lista = produtosDisponiveis) {
     const container = document.getElementById('produtos');
@@ -177,6 +238,7 @@ function listarProdutos(lista = produtosDisponiveis) {
             const corSelecionada = selectCor.value;
             const tamanhoSelecionado = div.querySelector('.tamanho').value;
             carrinho.adicionar(produto, corSelecionada, tamanhoSelecionado);
+            carrinhoView.atualizar();
         });
 
         container.appendChild(div);
