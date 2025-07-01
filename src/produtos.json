@@ -1,0 +1,116 @@
+[
+  {
+    "nome": "Camiseta",
+    "categoria": "Camisetas",
+    "preco": 59.9,
+    "cores": ["Verde", "Preto"],
+    "tamanhos": ["P", "M", "G", "GG"],
+    "imagem": {
+      "Verde": "imagens/camisetas/camisetaVerde.png",
+      "Preto": "imagens/camisetas/camisetaPreta.png"
+    }
+  },
+  {
+    "nome": "Camiseta Estampada",
+    "categoria": "Camisetas",
+    "preco": 69.9,
+    "cores": ["Branco e Vermelho", "Preto e Amarelo"],
+    "tamanhos": ["P", "M", "G", "GG"],
+    "imagem": {
+      "Branco e Vermelho": "imagens/camisetas/camisaBranca.png",
+      "Preto e Amarelo": "imagens/camisetas/camisaPreta.png"
+    }
+  },
+  {
+    "nome": "Camiseta Lisa",
+    "categoria": "Camisetas",
+    "preco": 49.9,
+    "cores": ["Preto", "Branco"],
+    "tamanhos": ["P", "M", "G", "GG"],
+    "imagem": {
+      "Preto": "imagens/camisetas/lisaPreta.png",
+      "Branco": "imagens/camisetas/lisaBranca.png"
+    }
+  },
+  {
+    "nome": "Calça Cargo",
+    "categoria": "Calças",
+    "preco": 89.9,
+    "cores": ["Jeans", "Bege", "Jeans Escuro"],
+    "tamanhos": ["40", "42", "44"],
+    "imagem": {
+      "Jeans": "imagens/calca/calcaAzul.png",
+      "Bege": "imagens/calca/calcaBege.png",
+      "Jeans Escuro": "imagens/calca/calcaEscura.png"
+    }
+  },
+  {
+    "nome": "Calça Sarja",
+    "categoria": "Calças",
+    "preco": 129.9,
+    "cores": ["Preto", "Marrom", "Verde"],
+    "tamanhos": ["40", "42", "44"],
+    "imagem": {
+      "Preto": "imagens/calca/sarjaPreta.png",
+      "Marrom": "imagens/calca/sarjaMarrom.png",
+      "Verde": "imagens/calca/sarjaVerde.png"
+    }
+  },
+  {
+    "nome": "Moletom Basico",
+    "categoria": "Moletons",
+    "preco": 199.9,
+    "cores": ["Preto","Branco", "Marrom"],
+    "tamanhos": ["P", "M", "G", "GG"],
+    "imagem": {
+      "Preto": "imagens/moletom/moletomPreto.png",
+      "Branco": "imagens/moletom/moletomBranco.png",
+      "Marrom": "imagens/moletom/moletomMarrom.png"
+    }
+  },
+  {
+    "nome": "Moletom Estampado",
+    "categoria": "Moletons",
+    "preco": 199.9,
+    "cores": ["Azul", "Marrom"],
+    "tamanhos": ["P", "M", "G", "GG"],
+    "imagem": {
+      "Azul": "imagens/moletom/moletomAzul.png",
+      "Marrom": "imagens/moletom/estampadoMarrom.png"
+    }
+  },
+  {
+    "nome": "Boné",
+    "categoria": "Acessórios",
+    "preco": 29.9,
+    "cores": ["Preto", "Vinho"],
+    "tamanhos": ["Único"],
+    "imagem": {
+      "Preto" : "imagens/acessorios/bone.png",
+      "Vinho" : "imagens/acessorios/boneVinho.png"
+    }
+  },
+  {
+    "nome": "Boné Aba Reta",
+    "categoria": "Acessórios",
+    "preco": 29.9,
+    "cores": ["Preto", "Verde", "Marrom"],
+    "tamanhos": ["Único"],
+    "imagem": {
+      "Preto" : "imagens/acessorios/abaPreto.png",
+      "Verde" : "imagens/acessorios/abaVerde.png",
+      "Marrom" : "imagens/acessorios/abaMarrom.png"
+    }
+  },
+  {
+    "nome": "Gorro",
+    "categoria": "Acessórios",
+    "preco": 29.9,
+    "cores": ["Azul", "Vermelho"],
+    "tamanhos": ["Único"],
+    "imagem": {
+      "Azul" : "imagens/acessorios/gorroAzul.png",
+      "Vermelho" : "imagens/acessorios/gorroVermelho.png"
+    }
+  }
+]
