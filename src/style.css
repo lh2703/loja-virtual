@@ -217,3 +217,8 @@ h2 {
     font-weight: bold;
     font-size: 1.1em;
 }
+.produto.esgotado {
+    opacity: 0.5;   /* Deixa o card meio transparente */
+    pointer-events: none; /* Impede clique em botões ou selects dentro */
+    filter: grayscale(80%); /* Deixa as cores apagadas, opcional */
+}

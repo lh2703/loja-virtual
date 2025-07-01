@@ -1,4 +1,4 @@
-// classe base dos produtos na loja
+let categoriaAtual = null;
 class ProdutoBase {
     constructor(nome, categoria, preco) {
         this._nome = nome;
@@ -36,7 +36,6 @@ class Produto extends ProdutoBase {
     }
 }
 
-
 // itens dentro do carrinho
 class ItemCarrinho {
     constructor(produto, cor, tamanho) {
@@ -49,15 +48,12 @@ class ItemCarrinho {
     get produto() {
         return this._produto;
     }
-
     get cor() {
         return this._cor;
     }
-
     get tamanho() {
         return this._tamanho;
     }
-
     get quantidade() {
         return this._quantidade;
     }
@@ -74,34 +70,35 @@ class ItemCarrinho {
 }
 
 // carrinho de compras com suas funcionalidades
-class Carrinho{
+class Carrinho {
     constructor() {
         this._itens = [];
     }
+
     get itens() {
         return this._itens;
     }
 
-    adicionar(produto, cor, tamanho){
-        const itemExiste = this._itens.find(p => 
+    adicionar(produto, cor, tamanho) {
+        const itemExiste = this._itens.find(p =>
             p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho
         );
 
-        if (itemExiste){
+        if (itemExiste) {
             itemExiste.incrementar();
-        }else{
+        } else {
             this._itens.push(new ItemCarrinho(produto, cor, tamanho));
         }
     }
 
-    remover(produto, cor, tamanho){
+    remover(produto, cor, tamanho) {
         const item = this._itens.find(p =>
             p.produto.nome === produto.nome && p.cor === cor && p.tamanho === tamanho
         );
 
         if (item) {
             item.decrementar();
-            if (item.quantidade === 0){
+            if (item.quantidade === 0) {
                 const index = this._itens.indexOf(item);
                 this._itens.splice(index, 1);
             }
@@ -150,7 +147,9 @@ class CarrinhoView {
                 btn.textContent = '✖';
                 btn.onclick = () => {
                     this.carrinho.remover(item.produto, item.cor, item.tamanho);
+                    estoque.adicionarProduto(item.produto, 1);
                     this.atualizar();
+                    listarProdutos();
                 };
 
                 div.appendChild(img);
@@ -165,25 +164,51 @@ class CarrinhoView {
     }
 }
 
+class EstoqueProdutos {
+    constructor() {
+        this._produtos = new Map();
+    }
 
+    adicionarProduto(produto, quantidade) {
+        const atual = this.getQuantidade(produto);
+        this._produtos.set(produto, atual + quantidade);
+    }
+
+    getQuantidade(produto) {
+        return this._produtos.get(produto) || 0;
+    }
+
+    reduzirEstoque(produto, quantidade) {
+        const atual = this.getQuantidade(produto);
+        if (quantidade > atual) return false;
+        this._produtos.set(produto, atual - quantidade);
+        return true;
+    }
+
+    estaEsgotado(produto) {
+        return this.getQuantidade(produto) <= 0;
+    }
+}
 
 // lista de produtos instanciados usando a classe Produto, herdada de ProdutoBase
 let produtosDisponiveis = [];
 
-fetch('produtos.json')
-  .then(res => res.json())
-  .then(dados => {
-    produtosDisponiveis = dados.map(p =>
-      new Produto(p.nome, p.categoria, p.preco, p.cores, p.tamanhos, p.imagem)
-    );
-    listarProdutos();
-  })
-  .catch(erro => console.error("Erro ao carregar produtos:", erro));
-
-
+const estoque = new EstoqueProdutos();
 const carrinho = new Carrinho();
 const carrinhoView = new CarrinhoView(carrinho, 'itens-carrinho', 'total');
 
+fetch('produtos.json')
+    .then(res => res.json())
+    .then(dados => {
+        produtosDisponiveis = dados.map(p =>
+            new Produto(p.nome, p.categoria, p.preco, p.cores, p.tamanhos, p.imagem)
+        );
+
+        produtosDisponiveis.forEach(prod => estoque.adicionarProduto(prod, 10));
+
+        listarProdutos();
+    })
+    .catch(erro => console.error("Erro ao carregar produtos:", erro));
 
 function listarProdutos(lista = produtosDisponiveis) {
     const container = document.getElementById('produtos');
@@ -225,6 +250,7 @@ function listarProdutos(lista = produtosDisponiveis) {
 
         const selectCor = div.querySelector('.cor');
         const img = div.querySelector('.imagem-produto');
+        const botao = div.querySelector('button');
 
         if (typeof produto.imagem === 'object') {
             selectCor.addEventListener('change', () => {
@@ -233,17 +259,38 @@ function listarProdutos(lista = produtosDisponiveis) {
             });
         }
 
-        const botao = div.querySelector('button');
-        botao.addEventListener('click', () => {
-            const corSelecionada = selectCor.value;
-            const tamanhoSelecionado = div.querySelector('.tamanho').value;
-            carrinho.adicionar(produto, corSelecionada, tamanhoSelecionado);
-            carrinhoView.atualizar();
-        });
+        if (estoque.estaEsgotado(produto)) {
+            div.classList.add('esgotado');
+            botao.disabled = true;
+            botao.textContent = 'Esgotado';
+        } else {
+            botao.addEventListener('click', () => {
+                const corSelecionada = selectCor.value;
+                const tamanhoSelecionado = div.querySelector('.tamanho').value;
+
+                if (estoque.getQuantidade(produto) > 0) {
+                    carrinho.adicionar(produto, corSelecionada, tamanhoSelecionado);
+                    estoque.reduzirEstoque(produto, 1);
+                    carrinhoView.atualizar();
+
+                    if (estoque.estaEsgotado(produto)) {
+                        botao.disabled = true;
+                        botao.textContent = 'Esgotado';
+                        div.classList.add('esgotado');
+                    }
+                } else {
+                    alert("Produto esgotado!");
+                    botao.disabled = true;
+                    botao.textContent = 'Esgotado';
+                    div.classList.add('esgotado');
+                }
+            });
+        }
 
         container.appendChild(div);
     });
 }
+
 
 function filtrarPorCategoria(categoria) {
     const filtrados = produtosDisponiveis.filter(p => p.categoria === categoria);
