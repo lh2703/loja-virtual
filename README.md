@@ -1,7 +1,8 @@
 
 # 🛒 Loja Virtual Simples
 
-Uma aplicação web simples de loja de roupas com funcionalidades básicas de listagem de produtos, escolha de variações (cor e tamanho), carrinho de compras dinâmico e carregamento de dados a partir de um arquivo JSON.
+Uma aplicação web simples para loja de roupas com funcionalidades básicas como listagem de produtos, escolha de variações (cor e tamanho), controle de estoque, carrinho de compras dinâmico e carregamento de dados a partir de um arquivo JSON.
+
 
 
 ## 📋 **Descrição**
@@ -12,11 +13,13 @@ Este projeto simula uma loja virtual utilizando HTML, CSS e JavaScript. O usuár
 
 ## 🌟 **Funcionalidades**
 
--  Listagem de produtos com imagens, preços, tamanhos e cores.
--  Escolha dinâmica de cores (troca da imagem ao selecionar uma cor).
--  Adição e remoção de produtos no carrinho.
--  Cálculo automático do valor total.
--  Produtos carregados de um arquivo JSON externo.
+- Navegar pelos produtos disponíveis, filtrando por categoria;
+- Escolher variações como cor e tamanho;
+- Adicionar produtos ao carrinho considerando estoque disponível;
+- Visualizar os itens no carrinho, com quantidade e subtotal;
+- Atualizar a quantidade de itens e remover do carrinho;
+- Ver o valor total atualizado dinamicamente;
+- Finalizar a compra, limpando o carrinho e atualizando o estoque.
 
 
 
