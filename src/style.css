@@ -219,6 +219,5 @@ h2 {
 }
 .produto.esgotado {
     opacity: 0.5;   /* Deixa o card meio transparente */
-    pointer-events: none; /* Impede clique em botões ou selects dentro */
-    filter: grayscale(80%); /* Deixa as cores apagadas, opcional */
+    filter: grayscale(100%); /* Deixa as cores apagadas, opcional */
 }
