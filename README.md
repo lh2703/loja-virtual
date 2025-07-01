@@ -31,7 +31,6 @@ src/
 │   ├── calca/
 │   ├── camisetas/
 │   ├── moletom/
-│   └── vestidos/
 ├── index.html                       # Página principal
 ├── produtos.json                    # Dados dos produtos (nome, preço, imagem etc.)
 ├── script.js                        # Lógica da loja e do carrinho
