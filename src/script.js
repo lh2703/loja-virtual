@@ -1,13 +1,23 @@
-class Produto {
-    constructor(nome, preco, cores, tamanhos, imagem) {
+// Classe base com propriedades comuns a todos os tipos de produtos
+class ProdutoBase {
+    constructor(nome, categoria, preco) {
         this.nome = nome;
+        this.categoria = categoria;
         this.preco = preco;
+    }
+}
+
+// Subclasse específica para produtos com variação de cor, tamanho e imagem
+class Produto extends ProdutoBase {
+    constructor(nome, categoria, preco, cores, tamanhos, imagem) {
+        super(nome, categoria, preco);
         this.cores = cores;
         this.tamanhos = tamanhos;
         this.imagem = imagem;
     }
 }
 
+// Representa um item dentro do carrinho
 class ItemCarrinho {
     constructor(produto, cor, tamanho) {
         this.produto = produto;
@@ -17,6 +27,7 @@ class ItemCarrinho {
     }
 }
 
+// Carrinho de compras com funcionalidades básicas
 class Carrinho {
     constructor() {
         this.itens = [];
@@ -55,47 +66,78 @@ class Carrinho {
         }, 0);
     }
 
-    exibir() {
-        const carrinhoDiv = document.getElementById('carrinho');
-        carrinhoDiv.innerHTML = '';
+   exibir() {
+    const carrinhoDiv = document.getElementById('itens-carrinho');
+    carrinhoDiv.innerHTML = '';
 
-        if (this.itens.length === 0) {
-            carrinhoDiv.innerHTML = '<p>Carrinho vazio.</p>';
-        } else {
-            this.itens.forEach(item => {
-                const p = document.createElement('p');
-                p.textContent = `${item.produto.nome} (${item.cor}, Tam: ${item.tamanho}) - R$ ${item.produto.preco.toFixed(2)} x ${item.quantidade}`;
+    if (this.itens.length === 0) {
+        carrinhoDiv.innerHTML = '<p>Carrinho vazio.</p>';
+    } else {
+        this.itens.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'item-carrinho';
 
-                const btn = document.createElement('button');
-                btn.textContent = 'Remover';
-                btn.addEventListener('click', () => {
-                    this.remover(item.produto, item.cor, item.tamanho);
-                });
+            const img = document.createElement('img');
+            img.src = typeof item.produto.imagem === 'object'
+                ? item.produto.imagem[item.cor]
+                : item.produto.imagem;
 
-                p.appendChild(btn);
-                carrinhoDiv.appendChild(p);
-            });
-        }
+            const details = document.createElement('div');
+            details.className = 'item-carrinho-details';
+            details.innerHTML = `
+                <strong>${item.produto.nome}</strong><br>
+                Cor: ${item.cor}<br>
+                Tam: ${item.tamanho}<br>
+                Qtde: ${item.quantidade}
+            `;
 
-        document.getElementById('total').innerText = this.calcularTotal().toFixed(2);
+            const btn = document.createElement('button');
+            btn.textContent = '✖';
+            btn.onclick = () => this.remover(item.produto, item.cor, item.tamanho);
+
+            div.appendChild(img);
+            div.appendChild(details);
+            div.appendChild(btn);
+
+            carrinhoDiv.appendChild(div);
+        });
     }
+
+    document.getElementById('total').innerText = this.calcularTotal().toFixed(2);
 }
 
+}
+
+// Lista de produtos instanciados usando a classe Produto (herda de ProdutoBase)
 const produtosDisponiveis = [
-    new Produto(
-        "Camiseta",
-        49.90,
+    new Produto("Camiseta Mas", "Camisetas", 49.90,
         ["Preto", "Vermelho", "Branco"],
         ["P", "M", "G", "GG"],
         {
-            "Preto": "imagens/camisetas/camisaPreta.png",
-            "Vermelho": "imagens/camisetas/camisaVermelha.png",
-            "Branco": "imagens/camisetas/camisaBranca.png"
+            "Preto": "imagens/camisetas/camiseta masculina/camisaPreta.png",
+            "Vermelho": "imagens/camisetas/camiseta masculina/camisaVermelha.png",
+            "Branco": "imagens/camisetas/camiseta masculina/camisaBranca.png"
         }
     ),
-    new Produto(
-        "Calça Alfaiataria",
-        89.90,
+    new Produto("Camiseta Fem", "Camisetas", 49.90,
+        ["Bege", "Azul", "Branco"],
+        ["P", "M", "G", "GG"],
+        {
+            "Bege": "imagens/camisetas/camiseta feminina/camisaBege.png",
+            "Azul": "imagens/camisetas/camiseta feminina/camisaAzul.png",
+            "Branco": "imagens/camisetas/camiseta feminina/camisaBranca.png"
+        }
+    ),
+    new Produto("Regata Fem", "Camisetas", 49.90,
+        ["Preto", "Marrom", "Branco"],
+        ["P", "M", "G", "GG"],
+        {
+            "Preto": "imagens/camisetas/regata feminina/regataPreta.png",
+            "Marrom": "imagens/camisetas/regata feminina/regataMarrom.png",
+            "Branco": "imagens/camisetas/regata feminina/regataBranca.png"
+        }
+    ),
+    new Produto("Calça Alfaiataria", "Calças", 89.90,
         ["Preto", "Bege", "Cinza"],
         ["40", "42", "44"],
         {
@@ -103,20 +145,15 @@ const produtosDisponiveis = [
             "Bege": "imagens/calca/calcaBege.png",
             "Cinza": "imagens/calca/calcaCinza.png"
         }
-        
     ),
-    new Produto(
-        "Jaqueta Jeans",
-        199.90,
+    new Produto("Jaqueta Jeans", "Jaquetas", 199.90,
         ["Jeans Claro"],
         ["P", "M", "G", "GG"],
         {
-            "Jeans Claro": "imagens/jaquetas/jaquetaClara.png",
+            "Jeans Claro": "imagens/jaquetas/jaquetaClara.png"
         }
     ),
-    new Produto(
-        "Vestido",
-        149.90,
+    new Produto("Vestido Curto", "Vestidos", 149.90,
         ["Preto", "Marrom", "Verde"],
         ["P", "M", "G", "GG"],
         {
@@ -125,9 +162,24 @@ const produtosDisponiveis = [
             "Preto": "imagens/vestidos/vestidoPreto.png"
         }
     ),
-    new Produto(
-        "Boné",
-        29.90,
+    new Produto("Vestido Listrado", "Vestidos", 99.90,
+        ["Branco", "Preto e Branco"],
+        ["P", "M", "G", "GG"],
+        {
+            "Branco": "imagens/vestidos/listadoBranco.png",
+            "Preto e Branco": "imagens/vestidos/listradoBranco.png"
+        }
+    ),
+    new Produto("Vestido Longo", "Vestidos", 99.90,
+        ["Bege", "Marrom", "Cinza"],
+        ["P", "M", "G", "GG"],
+        {
+            "Bege": "imagens/vestidos/longoBege.png",
+            "Marrom": "imagens/vestidos/longoPreto.png",
+            "Cinza": "imagens/vestidos/longoCinza.png"
+        }
+    ),
+    new Produto("Boné", "Bonés", 29.90,
         ["Preto", "Branco", "Cinza", "Bege"],
         ["Único"],
         "imagens/bone.png"
@@ -136,11 +188,11 @@ const produtosDisponiveis = [
 
 const carrinho = new Carrinho();
 
-function listarProdutos() {
+function listarProdutos(lista = produtosDisponiveis) {
     const container = document.getElementById('produtos');
     container.innerHTML = '';
 
-    produtosDisponiveis.forEach(produto => {
+    lista.forEach(produto => {
         const div = document.createElement('div');
         div.className = 'produto';
 
@@ -193,6 +245,11 @@ function listarProdutos() {
 
         container.appendChild(div);
     });
+}
+
+function filtrarPorCategoria(categoria) {
+    const filtrados = produtosDisponiveis.filter(p => p.categoria === categoria);
+    listarProdutos(filtrados);
 }
 
 listarProdutos();

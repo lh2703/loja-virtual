@@ -7,13 +7,27 @@
 </head>
 <body>
 
+<header>
     <h1>Loja de Roupas</h1>
+    <div id="categorias">
+        <button onclick="filtrarPorCategoria('Camisetas')">Camisetas</button>
+        <button onclick="filtrarPorCategoria('Calças')">Calças</button>
+        <button onclick="filtrarPorCategoria('Jaquetas')">Jaquetas</button>
+        <button onclick="filtrarPorCategoria('Vestidos')">Vestidos</button>
+        <button onclick="filtrarPorCategoria('Bonés')">Bonés</button>
+        <button onclick="listarProdutos()">Todos</button>
+    </div>
+</header>
 
+<div class="main-content">
     <div id="produtos" class="container"></div>
 
-    <h2>Carrinho de Compras</h2>
-    <div id="carrinho"></div>
-    <p><strong>Total:</strong> R$ <span id="total">0.00</span></p>
+    <aside id="carrinho">
+        <h2>Carrinho</h2>
+        <div id="itens-carrinho"></div>
+        <p><strong>Total:</strong> R$ <span id="total">0.00</span></p>
+    </aside>
+</div>
 
     <script src="script.js"></script>
 </body>
