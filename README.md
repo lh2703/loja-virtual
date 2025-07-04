@@ -29,7 +29,7 @@ Este projeto simula uma loja virtual utilizando HTML, CSS e JavaScript. O usuár
 
 ```
 src/
-├── imagens/                         # Imagens organizadas por categoria
+├── imagens/                         # Imagens das peças de roupa organizadas por categoria
 │   ├── acessorios/
 │   ├── calca/
 │   ├── camisetas/
